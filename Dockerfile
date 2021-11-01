@@ -1,14 +1,14 @@
-FROM <IMAGE> as build-env
-
+FROM mcr.microsoft.com/dotnet/framework/sdk:4.8 AS build-env
 WORKDIR /app
-RUN <build command>
-COPY . ./
-RUN <publish command>
+COPY ./source/ConsoleRandomAnswerGenerator .
+RUN dotnet restore
+RUN dotnet build
 
+# Move build output to a runtime environment
 
-FROM <IMAGE> as run-env
+FROM mcr.microsoft.com/dotnet/framework/runtime:4.8 AS runtime
 WORKDIR /app
-COPY --from=build-env /app/output .
-EXPOSE 80 8080
-ENTRYPOINT []
+COPY --from=build-env /app/bin/Debug .
+# EXPOSE 80 8080
+# ENTRYPOINT []
 
